@@ -1,8 +1,14 @@
 package com.jetbrains.marco.photozclone;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 public class Photo {
 
     private String id;
+
+    @NotEmpty
+    @NotBlank
     private String fileName;
     // Constructor
 
