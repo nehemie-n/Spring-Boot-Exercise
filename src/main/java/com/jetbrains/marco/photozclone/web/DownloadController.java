@@ -15,7 +15,7 @@ public class DownloadController {
     PhotozService photozService;
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> download(@PathVariable String id) {
+    public ResponseEntity<byte[]> download(@PathVariable Integer id) {
         Photo photo = photozService.getOne(id);
         HttpHeaders headers = new HttpHeaders() {{
             setContentType(MediaType.valueOf(photo.getContentType()));

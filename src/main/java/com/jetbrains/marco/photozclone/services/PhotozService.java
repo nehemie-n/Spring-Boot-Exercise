@@ -1,24 +1,25 @@
 package com.jetbrains.marco.photozclone.services;
 
 import com.jetbrains.marco.photozclone.model.Photo;
+import com.jetbrains.marco.photozclone.repository.PhotozRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PhotozService {
 
-    private Map<String, Photo> db = new HashMap<>() {{
-        put("1", new Photo("1", "hello.jpg"));
-    }};
 
+    private final PhotozRepository photozRepository;
+
+    public PhotozService(PhotozRepository photozRepository){
+        this.photozRepository = photozRepository;
+    }
 
     public  Photo create(MultipartFile file) throws IOException {
         Photo photo = new Photo();
@@ -27,31 +28,27 @@ public class PhotozService {
         System.out.println("file.getName()" + file.getName());
         System.out.println("file.getSize()" + file.getSize());
         photo.setContentType(file.getContentType());
-        photo.setId(UUID.randomUUID().toString());
         photo.setFileName(file.getOriginalFilename());
         photo.setData(file.getBytes());
-        db.put(photo.getId(), photo);
+        photo = photozRepository.save(photo);
         return photo;
     }
 
-    public List<Photo> getAll() {
-        return db.values().stream().toList();
+    public Iterable<Photo> getAll() {
+        return photozRepository.findAll();
     }
 
-    public Photo getOne(String id) {
-        Photo photo = db.get(id);
+    public Photo getOne(Integer id) {
+        Photo photo = photozRepository.findById(id).orElse(null);
         if(photo == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return photo;
     }
 
-    public String remove(String id) {
-        Photo photo = db.remove(id);
-        if(photo == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return photo.getId() + " deleted Successfully.";
+    public String remove(Integer id) {
+        photozRepository.deleteById(id);
+        return " deleted Successfully.";
     }
 }
 

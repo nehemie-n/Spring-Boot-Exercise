@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -26,17 +27,17 @@ public class PhotozController {
     }
 
     @GetMapping("/photoz")
-    public List<Photo> geAll(){
+    public Iterable<Photo> geAll(){
         return  photozService.getAll();
     }
 
     @GetMapping("/photoz/{id}")
-    public Photo getOne(@PathVariable String id){
+    public Photo getOne(@PathVariable Integer id){
         return photozService.getOne(id);
     }
 
     @DeleteMapping("/photoz/{id}")
-    public String deleteOne(@PathVariable String id){
+    public String deleteOne(@PathVariable Integer id){
         return photozService.remove(id);
     }
 }
